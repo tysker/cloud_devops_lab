@@ -2,21 +2,101 @@
 
 ## Project Description
 
--- description about the devops project
+This repository is a complete end-to-end DevOps learning project built around a small Python Flask
+application. The goal is to gradually build a realistic production-like environment that includes:
+
+- containerization with Docker
+- CI/CD pipelines (GitHub Actions)
+- artifact registries (Docker Registry & GitHub Packages)
+- infrastructure provisioning (Terraform)
+- configuration management (Ansible roles)
+- monitoring and visualization (Prometheus & Grafana)
+- security best practices (jump host, SSH hardening, TLS certificates)
+
+The project grows in clear stages. Each stage is documented with **what was done**, **why it matters**,
+and **how it was implemented**, so it becomes both a learning journal and a portfolio project.
 
 ## Structure
 
--- tree structure of the project
+Current project layout:
+
+```
+cloud_devops_lab/
+│
+├── app/
+│   └── src/
+│       ├── app.py
+│       ├── __init__.py
+│       ├── routes/
+│       │   ├── __init__.py
+│       │   └── root.py
+│       └── utils/
+│           ├── __init__.py
+│           └── counters.py
+│
+├── .gitignore
+└── README.md
+```
+
+## Requirements (current)
+
+- Python 3.12+
+- pip / venv
+- Git
+
+## Running the Application Locally
+
+```
+python -m venv venv
+source venv/bin/activate
+pip install -r app/requirements.txt
+python -m app.src.app
+```
+
+```
+Application runs at:
+http://localhost:5000/
+```
 
 ## Stages
 
-**Stage 1:**
+The project is built in incremental stages. Each stage adds a new DevOps capability on top of the existing system.
 
-- Basic Flask application running locally.
+### Stage 1 — Minimal Flask Application (Completed)
+
+- Basic Flask application runs locally.
 - Endpoints:
   - `/` – root
   - `/health`
-  - `/metrics/custom` (coming soon)
+- Foundation for Dockerization, CI/CD, monitoring and future infrastructure work.
+
+### Upcoming Stages
+
+- Stage 2: Containerization with Docker
+- Stage 3: CI/CD pipeline (GitHub Actions)
+- Stage 4: Docker Registry & GitHub Packages integration
+- Stage 5: Terraform infrastructure (servers, VPC, DNS)
+- Stage 6: Ansible configuration (roles, hardening, deployments)
+- Stage 7: Monitoring stack (Prometheus & Grafana)
+- Stage 8: TLS certificates & reverse proxy
+- Stage 9: Security improvements (jump host, firewall rules)
+
+## Learning Log
+
+A chronological log describing the work done in each stage.
+
+### Stage 1 — Flask Application
+
+**What:** Implemented a minimal Flask API with initial routing.  
+**Why:** A simple application is required before adding Docker, CI/CD, infrastructure and monitoring.  
+**How:** Created project folder structure, used Blueprints, tested locally with Python.
+
+Stage 1 is now complete and provides the foundation for containerization in Stage 2.
+
+## Next Step
+
+Proceed to **Stage 2: Containerization with Docker**, where the application will be packaged into
+a production-ready container image.
 
 ## Git Workflow & Conventions
 
@@ -66,3 +146,7 @@ Examples:
 - `docs(readme): document phase 1 (Flask app)`
 - `infra(terraform): create linode instances for app and monitoring`
 - `ci(docker): add image build and push workflow`
+
+## License
+
+TBD – Will be added later in the project.

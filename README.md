@@ -62,7 +62,11 @@ http://localhost:5000/
 
 The project is built in incremental stages. Each stage adds a new DevOps capability on top of the existing system.
 
-### Stage 1 — Minimal Flask Application (Completed)
+### Stage 1 — Flask Application
+
+**What:** Implemented a minimal Flask API with initial routing.  
+**Why:** A simple application is required before adding Docker, CI/CD, infrastructure and monitoring.  
+**How:** Created project folder structure, used Blueprints, tested locally with Python.
 
 - Basic Flask application runs locally.
 - Endpoints:
@@ -70,35 +74,7 @@ The project is built in incremental stages. Each stage adds a new DevOps capabil
   - `/health`
 - Foundation for Dockerization, CI/CD, monitoring and future infrastructure work.
 
-### Upcoming Stages
-
-- Stage 2: Containerization with Docker
-- Stage 3: CI/CD pipeline (GitHub Actions)
-- Stage 4: Docker Registry & GitHub Packages integration
-- Stage 5: Terraform infrastructure (servers, VPC, DNS)
-- Stage 6: Ansible configuration (roles, hardening, deployments)
-- Stage 7: Monitoring stack (Prometheus & Grafana)
-- Stage 8: TLS certificates & reverse proxy
-- Stage 9: Security improvements (jump host, firewall rules)
-
-## Learning Log
-
-A chronological log describing the work done in each stage.
-
-## Stages
-
-**Stage 1 - Flask API**
-
-**What:** Implemented a minimal Flask API with initial routing.  
-**Why:** A simple application is required before adding Docker, CI/CD, infrastructure and monitoring.  
-**How:** Created project folder structure, used Blueprints, tested locally with Python.
-
-- Endpoints:
-  - `/` – root
-  - `/health`
-  - `/metrics/custom`
-
-**Stage 2 — Containerization with Docker**
+### Stage 2 — Containerization with Docker
 
 **What:**  
 Created a production-ready Dockerfile for the Flask application using a multi-stage build.
@@ -124,21 +100,9 @@ foundation for CI/CD pipelines, registries, deployment automation, and infrastru
 3. Test health endpoint: `curl http://localhost:5000/health`
 4. Test metrics: `curl http://localhost:5000/metrics/custom`
 
-## Stages
-
-The project is built in incremental stages. Each stage adds a new DevOps capability on top of the existing system.
-
-### Stage 1 — Minimal Flask Application (Completed)
-
-- Basic Flask application runs locally.
-- Endpoints:
-  - `/` – root
-  - `/health`
-- Foundation for Dockerization, CI/CD, monitoring and future infrastructure work.
-
 ### Upcoming Stages
 
-- Stage 2: Containerization with Docker
+- <p><s>Stage 2: Containerization with Docker</s></p>
 - Stage 3: CI/CD pipeline (GitHub Actions)
 - Stage 4: Docker Registry & GitHub Packages integration
 - Stage 5: Terraform infrastructure (servers, VPC, DNS)
@@ -151,18 +115,10 @@ The project is built in incremental stages. Each stage adds a new DevOps capabil
 
 A chronological log describing the work done in each stage.
 
-### Stage 1 — Flask Application
-
-**What:** Implemented a minimal Flask API with initial routing.  
-**Why:** A simple application is required before adding Docker, CI/CD, infrastructure and monitoring.  
-**How:** Created project folder structure, used Blueprints, tested locally with Python.
-
-Stage 1 is now complete and provides the foundation for containerization in Stage 2.
-
 ## Next Step
 
-Proceed to **Stage 2: Containerization with Docker**, where the application will be packaged into
-a production-ready container image.
+- <p><s>Proceed To Stage 2: Containerization With Docker, Where The Application Will Be Packaged Into A Production-Ready Container Image.</p></s>
+- <p>Procced To Stage 3: CI/CD pipeline (GitHub Actions)</p>
 
 ## Git Workflow & Conventions
 

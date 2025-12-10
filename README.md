@@ -100,11 +100,28 @@ foundation for CI/CD pipelines, registries, deployment automation, and infrastru
 3. Test health endpoint: `curl http://localhost:5000/health`
 4. Test metrics: `curl http://localhost:5000/metrics/custom`
 
+### Stage 3 — CI/CD Pipeline (Part 2: GHCR Integration)
+
+**What:**  
+Extended the GitHub Actions workflow to build Docker images with tags and push them to
+GitHub Container Registry (GHCR).
+
+**Why:**  
+A registry is required for deployment automation and ensures versioned, reproducible artifacts
+that can be pulled by servers during deployment.
+
+**How:**
+
+- Added permissions for GitHub Actions to write to GHCR.
+- Logged in to GHCR using `GITHUB_TOKEN`.
+- Created two image tags (`latest` and short commit SHA).
+- Pushed images automatically on changes to `develop` and `main`.
+
 ### Upcoming Stages
 
 - <p><s>Stage 2: Containerization with Docker</s></p>
-- Stage 3: CI/CD pipeline (GitHub Actions)
-- Stage 4: Docker Registry & GitHub Packages integration
+- <p><s>Stage 3: CI/CD pipeline (GitHub Actions)</s></p>
+- <p><s>Stage 4: Docker Registry & GitHub Packages integration</s></p>
 - Stage 5: Terraform infrastructure (servers, VPC, DNS)
 - Stage 6: Ansible configuration (roles, hardening, deployments)
 - Stage 7: Monitoring stack (Prometheus & Grafana)
@@ -118,7 +135,9 @@ A chronological log describing the work done in each stage.
 ## Next Step
 
 - <p><s>Proceed To Stage 2: Containerization With Docker, Where The Application Will Be Packaged Into A Production-Ready Container Image.</p></s>
-- <p>Procced To Stage 3: CI/CD pipeline (GitHub Actions)</p>
+- <p><s>Procced To Stage 3: CI/CD pipeline (GitHub Actions)</s></p>
+- <p><s>Procced To Stage 4: Docker Registry & GitHub Packages integration</s></p>
+- <p>Procced To Stage 5: Terraform infrastructure (servers, VPC, DNS)</p>
 
 ## Git Workflow & Conventions
 

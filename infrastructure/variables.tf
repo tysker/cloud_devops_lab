@@ -15,3 +15,8 @@ variable "instance_type" {
   type        = string
   default     = "g6-nanode-1"
 }
+
+variable "ssh_public_key_path" {
+  description = "Path to the SSH public key used to access servers"
+  type        = string
+}

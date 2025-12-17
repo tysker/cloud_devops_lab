@@ -4,6 +4,8 @@ resource "linode_instance" "jump" {
   type   = var.instance_type
   image  = "linode/ubuntu22.04"
 
+  authorized_keys = [chomp(file(var.ssh_public_key_path))]
+
   private_ip = true
 }
 
@@ -12,6 +14,9 @@ resource "linode_instance" "app" {
   region = var.region
   type   = var.instance_type
   image  = "linode/ubuntu22.04"
+
+  authorized_keys = [chomp(file(var.ssh_public_key_path))]
+
 
   private_ip = true
 }
@@ -22,5 +27,24 @@ resource "linode_instance" "monitoring" {
   type   = var.instance_type
   image  = "linode/ubuntu22.04"
 
+  authorized_keys = [chomp(file(var.ssh_public_key_path))]
+
   private_ip = true
+}
+
+resource "linode_firewall" "jump_fw" {
+  label = "cloud-devops-jump-fw"
+
+  inbound {
+    label    = "allow-ssh" # Allows ssh from anywhere (restrict later)
+    action   = "ACCEPT"
+    protocol = "TCP"
+    ports    = "22"
+    ipv4     = ["0.0.0.0/0"]
+  }
+
+  inbound_policy  = "DROP"   # Drops evertying else 
+  outbound_policy = "ACCEPT" # Allows outbound traffic
+
+  linodes = [linode_instance.jump.id]
 }

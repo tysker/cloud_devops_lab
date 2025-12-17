@@ -1,8 +1,8 @@
 resource "linode_instance" "jump" {
-  label  = "cloud-devops-jump"
+  label  = "${var.project_name}-${var.environment}-jump"
   region = var.region
   type   = var.instance_type
-  image  = "linode/ubuntu22.04"
+  image  = var.image
 
   authorized_keys = [chomp(file(var.ssh_public_key_path))]
 
@@ -10,10 +10,10 @@ resource "linode_instance" "jump" {
 }
 
 resource "linode_instance" "app" {
-  label  = "cloud-devops-app"
+  label  = "${var.project_name}-${var.environment}-app"
   region = var.region
   type   = var.instance_type
-  image  = "linode/ubuntu22.04"
+  image  = var.image
 
   authorized_keys = [chomp(file(var.ssh_public_key_path))]
 
@@ -22,10 +22,10 @@ resource "linode_instance" "app" {
 }
 
 resource "linode_instance" "monitoring" {
-  label  = "cloud-devops-monitoring"
+  label  = "${var.project_name}-${var.environment}-monitoring"
   region = var.region
   type   = var.instance_type
-  image  = "linode/ubuntu22.04"
+  image  = var.image
 
   authorized_keys = [chomp(file(var.ssh_public_key_path))]
 
@@ -33,7 +33,7 @@ resource "linode_instance" "monitoring" {
 }
 
 resource "linode_firewall" "jump_fw" {
-  label = "cloud-devops-jump-fw"
+  label = "${var.project_name}-jump-fw"
 
   inbound {
     label    = "allow-ssh" # Allows ssh from anywhere (restrict later)
@@ -50,7 +50,7 @@ resource "linode_firewall" "jump_fw" {
 }
 
 resource "linode_firewall" "app_fw" {
-  label = "cloud-devops-app-fw"
+  label = "${var.project_name}-app-fw"
 
   inbound {
     label    = "allow-private-ssh"
@@ -75,7 +75,7 @@ resource "linode_firewall" "app_fw" {
 }
 
 resource "linode_firewall" "monitoring_fw" {
-  label = "cloud-devops-monitoring-fw"
+  label = "${var.project_name}-monitoring-fw"
 
   inbound {
     label    = "allow-private-ssh"

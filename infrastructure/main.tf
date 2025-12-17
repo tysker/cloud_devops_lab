@@ -1,5 +1,5 @@
-resource "linode_instance" "test" {
-  label  = "tf-test-instance"
+resource "linode_instance" "jump" {
+  label  = "cloud-devops-jump"
   region = var.region
   type   = var.instance_type
   image  = "linode/ubuntu22.04"

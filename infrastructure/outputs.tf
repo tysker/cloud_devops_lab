@@ -1,9 +1,9 @@
-output "test_public_ip" {
-  description = "Public IPv4 address of the test Linode instance"
-  value       = tolist(linode_instance.test.ipv4)[0]
+output "jump_public_ip" {
+  description = "Public IPv4 address of the jump server"
+  value       = tolist(linode_instance.jump.ipv4)[0]
 }
 
-output "test_private_ip" {
-  description = "Private IPv4 address of the test Linode instance used for internal networking"
-  value       = linode_instance.test.private_ip_address
+output "jump_private_ip" {
+  description = "Private IPv4 address of the jump server"
+  value       = linode_instance.jump.private_ip_address
 }

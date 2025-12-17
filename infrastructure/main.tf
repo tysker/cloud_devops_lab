@@ -15,3 +15,12 @@ resource "linode_instance" "app" {
 
   private_ip = true
 }
+
+resource "linode_instance" "monitoring" {
+  label  = "cloud-devops-monitoring"
+  region = var.region
+  type   = var.instance_type
+  image  = "linode/ubuntu22.04"
+
+  private_ip = true
+}

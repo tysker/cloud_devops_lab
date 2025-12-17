@@ -12,3 +12,8 @@ output "app_private_ip" {
   description = "Private IPv4 address of the application server"
   value       = linode_instance.app.private_ip_address
 }
+
+output "monitoring_private_ip" {
+  description = "Private IPv4 address of the monitoring server"
+  value       = linode_instance.monitoring.private_ip_address
+}

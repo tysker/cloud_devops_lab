@@ -1,35 +1,65 @@
-resource "linode_instance" "jump" {
-  label  = "${var.project_name}-${var.environment}-jump"
-  region = var.region
-  type   = var.instance_type
-  image  = var.image
+# resource "linode_instance" "jump" {
+#   label  = "${var.project_name}-${var.environment}-jump"
+#   region = var.region
+#   type   = var.instance_type
+#   image  = var.image
+#
+#   authorized_keys = [chomp(file(var.ssh_public_key_path))]
+#
+#   private_ip = true
+# }
+#
+# resource "linode_instance" "app" {
+#   label  = "${var.project_name}-${var.environment}-app"
+#   region = var.region
+#   type   = var.instance_type
+#   image  = var.image
+#
+#   authorized_keys = [chomp(file(var.ssh_public_key_path))]
+#
+#
+#   private_ip = true
+# }
+#
+# resource "linode_instance" "monitoring" {
+#   label  = "${var.project_name}-${var.environment}-monitoring"
+#   region = var.region
+#   type   = var.instance_type
+#   image  = var.image
+#
+#   authorized_keys = [chomp(file(var.ssh_public_key_path))]
+#
+#   private_ip = true
+# }
 
+module "jump" {
+  source = "./modules/compute"
+
+  label           = "${var.project_name}-${var.environment}-jump"
+  region          = var.region
+  instance_type   = var.instance_type
+  image           = var.image
   authorized_keys = [chomp(file(var.ssh_public_key_path))]
-
-  private_ip = true
 }
 
-resource "linode_instance" "app" {
-  label  = "${var.project_name}-${var.environment}-app"
-  region = var.region
-  type   = var.instance_type
-  image  = var.image
+module "app" {
+  source = "./modules/compute"
 
+  label           = "${var.project_name}-${var.environment}-app"
+  region          = var.region
+  instance_type   = var.instance_type
+  image           = var.image
   authorized_keys = [chomp(file(var.ssh_public_key_path))]
-
-
-  private_ip = true
 }
 
-resource "linode_instance" "monitoring" {
-  label  = "${var.project_name}-${var.environment}-monitoring"
-  region = var.region
-  type   = var.instance_type
-  image  = var.image
+module "monitoring" {
+  source = "./modules/compute"
 
+  label           = "${var.project_name}-${var.environment}-monitoring"
+  region          = var.region
+  instance_type   = var.instance_type
+  image           = var.image
   authorized_keys = [chomp(file(var.ssh_public_key_path))]
-
-  private_ip = true
 }
 
 resource "linode_firewall" "jump_fw" {
@@ -46,7 +76,7 @@ resource "linode_firewall" "jump_fw" {
   inbound_policy  = "DROP"   # Drops evertying else 
   outbound_policy = "ACCEPT" # Allows outbound traffic
 
-  linodes = [linode_instance.jump.id]
+  linodes = [module.jump.id]
 }
 
 resource "linode_firewall" "app_fw" {
@@ -57,7 +87,7 @@ resource "linode_firewall" "app_fw" {
     action   = "ACCEPT"
     protocol = "TCP"
     ports    = "22"
-    ipv4     = ["${linode_instance.jump.private_ip_address}/32"]
+    ipv4     = ["${module.jump.private_ip}/32"]
   }
 
   inbound {
@@ -71,7 +101,7 @@ resource "linode_firewall" "app_fw" {
   inbound_policy  = "DROP"
   outbound_policy = "ACCEPT"
 
-  linodes = [linode_instance.app.id]
+  linodes = [module.app.id]
 }
 
 resource "linode_firewall" "monitoring_fw" {
@@ -82,7 +112,7 @@ resource "linode_firewall" "monitoring_fw" {
     action   = "ACCEPT"
     protocol = "TCP"
     ports    = "22"
-    ipv4     = ["${linode_instance.jump.private_ip_address}/32"]
+    ipv4     = ["${module.jump.private_ip}/32"]
   }
 
   inbound {
@@ -96,5 +126,5 @@ resource "linode_firewall" "monitoring_fw" {
   inbound_policy  = "DROP"
   outbound_policy = "ACCEPT"
 
-  linodes = [linode_instance.monitoring.id]
+  linodes = [module.monitoring.id]
 }

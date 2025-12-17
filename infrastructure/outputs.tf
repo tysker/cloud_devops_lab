@@ -1,19 +1,19 @@
 output "jump_public_ip" {
   description = "Public IPv4 address of the jump server"
-  value       = tolist(linode_instance.jump.ipv4)[0]
+  value       = tolist(module.jump.ipv4)[0]
 }
 
 output "jump_private_ip" {
   description = "Private IPv4 address of the jump server"
-  value       = linode_instance.jump.private_ip_address
+  value       = module.jump.private_ip
 }
 
 output "app_private_ip" {
   description = "Private IPv4 address of the application server"
-  value       = linode_instance.app.private_ip_address
+  value       = module.app.private_ip
 }
 
 output "monitoring_private_ip" {
   description = "Private IPv4 address of the monitoring server"
-  value       = linode_instance.monitoring.private_ip_address
+  value       = module.monitoring.private_ip
 }

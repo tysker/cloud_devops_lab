@@ -48,3 +48,28 @@ resource "linode_firewall" "jump_fw" {
 
   linodes = [linode_instance.jump.id]
 }
+
+resource "linode_firewall" "app_fw" {
+  label = "cloud-devops-app-fw"
+
+  inbound {
+    label    = "allow-private-ssh"
+    action   = "ACCEPT"
+    protocol = "TCP"
+    ports    = "22"
+    ipv4     = ["${linode_instance.jump.private_ip_address}/32"]
+  }
+
+  inbound {
+    label    = "allow-private-app-traffic"
+    action   = "ACCEPT"
+    protocol = "TCP"
+    ports    = "1-65535"
+    ipv4     = ["192.168.0.0/16"]
+  }
+
+  inbound_policy  = "DROP"
+  outbound_policy = "ACCEPT"
+
+  linodes = [linode_instance.app.id]
+}

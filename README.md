@@ -190,6 +190,25 @@ infrastructure
 
 This stage establishes the baseline infrastructure but does not yet deploy applications.
 
+### Stage 5 - DNS & Domain Management
+
+The domain `clouddevopslab.eu` is registered at simply.com and delegated to Cloudflare
+for DNS management and security features.
+
+#### DNS Flow
+
+- Domain registered at simply.com
+- Nameservers delegated to Cloudflare
+- DNS records managed in Cloudflare
+- Application traffic will later be proxied via Cloudflare
+
+#### Current Records
+
+- `clouddevopslab.eu` → A record → application server
+- `www.clouddevopslab.eu` → A record → application server
+
+At this stage, DNS records exist but application traffic is not yet exposed.
+
 ## Learning Log
 
 A chronological log describing the work done in each stage.

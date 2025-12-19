@@ -22,19 +22,26 @@ Current project layout:
 
 ```
 cloud_devops_lab/
-│
-├── app/
-│   └── src/
-│       ├── app.py
-│       ├── __init__.py
-│       ├── routes/
-│       │   ├── __init__.py
-│       │   └── root.py
-│       └── utils/
-│           ├── __init__.py
-│           └── counters.py
-│
-├── .gitignore
+├── app
+│   ├── Dockerfile
+│   ├── src
+│   │   ├── app.py
+│   │   ├── routes
+│   │   └── utils
+│   └── venv
+├── infrastructure
+│   └── terraform
+│       ├── main.tf
+│       ├── modules
+│       │   └── compute
+│       │       ├── main.tf
+│       │       ├── outputs.tf
+│       │       ├── providers.tf
+│       │       └── variables.tf
+│       ├── outputs.tf
+│       ├── providers.tf
+│       └── variables.tf
+├── LICENSE
 └── README.md
 ```
 
@@ -43,6 +50,11 @@ cloud_devops_lab/
 - Python 3.12+
 - pip / venv
 - Git
+- Ansible
+- Terraform
+- Linode for server hosting
+- Cloudflare (DNS)
+- Domain registrar
 
 ## Running the Application Locally
 
@@ -61,6 +73,19 @@ http://localhost:5000/
 ## Stages
 
 The project is built in incremental stages. Each stage adds a new DevOps capability on top of the existing system.
+
+### Upcoming Stages
+
+### Upcoming Stages
+
+- <s>Stage 2: Containerization with Docker</s>
+- <s>Stage 3: CI/CD pipeline (GitHub Actions)</s>
+- <s>Stage 4: Infrastructure (Terraform – servers, networking, firewalls)</s>
+- Stage 5: DNS & domain management (Cloudflare)
+- Stage 6: Ansible configuration (roles, hardening, deployments)
+- Stage 7: Monitoring stack (Prometheus & Grafana)
+- Stage 8: TLS certificates & reverse proxy
+- Stage 9: Security improvements & hardening
 
 ### Stage 1 — Flask Application
 
@@ -100,7 +125,7 @@ foundation for CI/CD pipelines, registries, deployment automation, and infrastru
 3. Test health endpoint: `curl http://localhost:5000/health`
 4. Test metrics: `curl http://localhost:5000/metrics/custom`
 
-### Stage 3 — CI/CD Pipeline (Part 2: GHCR Integration)
+### Stage 3 — CI/CD Pipeline (GHCR Integration)
 
 **What:**  
 Extended the GitHub Actions workflow to build Docker images with tags and push them to
@@ -111,22 +136,83 @@ A registry is required for deployment automation and ensures versioned, reproduc
 that can be pulled by servers during deployment.
 
 **How:**
-
 - Added permissions for GitHub Actions to write to GHCR.
 - Logged in to GHCR using `GITHUB_TOKEN`.
 - Created two image tags (`latest` and short commit SHA).
 - Pushed images automatically on changes to `develop` and `main`.
 
-### Upcoming Stages
+### Stage 4 - Infrastructure (Terraform – servers, networking, firewalls)
 
-- <p><s>Stage 2: Containerization with Docker</s></p>
-- <p><s>Stage 3: CI/CD pipeline (GitHub Actions)</s></p>
-- <p><s>Stage 4: Docker Registry & GitHub Packages integration</s></p>
-- Stage 5: Terraform infrastructure (servers, VPC, DNS)
-- Stage 6: Ansible configuration (roles, hardening, deployments)
-- Stage 7: Monitoring stack (Prometheus & Grafana)
-- Stage 8: TLS certificates & reverse proxy
-- Stage 9: Security improvements (jump host, firewall rules)
+Infrastructure is provisioned using Terraform on Linode (Akamai).
+
+#### Architecture Overview
+
+- **Jump Server**
+  - Public + private IP
+  - SSH entry point (bastion host)
+
+- **Application Server**
+  - Private network only
+  - Runs application containers
+
+- **Monitoring Server**
+  - Private network only
+  - Runs Prometheus and Grafana
+
+All servers share a private network.  
+Only the jump server is reachable from the public internet.
+
+#### Security Model
+
+- Bastion (jump server) pattern
+- SSH key authentication only
+- No private keys stored on servers
+- App and monitoring servers accessible only via private network
+- Network access enforced using Linode Firewalls
+- SSH agent forwarding used for hop-based access
+
+#### Terraform Structure
+
+```
+infrastructure
+└── terraform
+    ├── main.tf
+    ├── modules
+    │   └── compute
+    │       ├── main.tf
+    │       ├── outputs.tf
+    │       ├── providers.tf
+    │       └── variables.tf
+    ├── outputs.tf
+    ├── providers.tf
+    └── variables.tf
+```
+
+This stage establishes the baseline infrastructure but does not yet deploy applications.
+
+### Stage 5 - DNS & Domain Management
+
+The domain `clouddevopslab.eu` is registered at simply.com and delegated to Cloudflare
+for DNS management and security features.
+
+#### DNS Flow
+
+- Domain registered at simply.com
+- Nameservers delegated to Cloudflare
+- DNS records managed in Cloudflare
+- Application traffic will later be proxied via Cloudflare
+
+#### Current Records
+
+- `clouddevopslab.eu` → A record → application server
+- `www.clouddevopslab.eu` → A record → application server
+
+At this stage, DNS records exist but application traffic is not yet exposed.
+
+Note: During early stages, application IP addresses may change when infrastructure
+is recreated. A reserved IPv4 address will be introduced later to provide a stable
+DNS target.
+
 
 ## Learning Log
 
@@ -134,10 +220,10 @@ A chronological log describing the work done in each stage.
 
 ## Next Step
 
-- <p><s>Proceed To Stage 2: Containerization With Docker, Where The Application Will Be Packaged Into A Production-Ready Container Image.</p></s>
-- <p><s>Procced To Stage 3: CI/CD pipeline (GitHub Actions)</s></p>
-- <p><s>Procced To Stage 4: Docker Registry & GitHub Packages integration</s></p>
-- <p>Procced To Stage 5: Terraform infrastructure (servers, VPC, DNS)</p>
+- <s>Proceed To Stage 2: Containerization With Docker, Where The Application Will Be Packaged Into A Production-Ready Container Image.</s>
+- <s>Procced To Stage 3: CI/CD pipeline (GitHub Actions & GHCR Integration)</s>
+- <s>Procced To Stage 4: Infrastructure (Terraform – servers, networking, firewalls)</s>
+- Procced To Stage 5: DNS & domain management (Cloudflare)
 
 ## Git Workflow & Conventions
 

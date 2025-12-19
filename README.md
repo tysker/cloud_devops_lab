@@ -209,6 +209,11 @@ for DNS management and security features.
 
 At this stage, DNS records exist but application traffic is not yet exposed.
 
+Note: During early stages, application IP addresses may change when infrastructure
+is recreated. A reserved IPv4 address will be introduced later to provide a stable
+DNS target.
+
+
 ## Learning Log
 
 A chronological log describing the work done in each stage.

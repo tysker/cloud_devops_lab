@@ -1,0 +1,21 @@
+- name: Ensure devops user exists
+  ansible.builtin.user:
+    name: "{{ devops_user }}"
+    shell: /bin/bash
+    create_home: true
+    groups: sudo
+    append: true
+
+- name: Allow passwordless sudo for devops (temporary)
+  ansible.builtin.copy:
+    dest: "/etc/sudoers.d/{{ devops_user }}"
+    content: "{{ devops_user }} ALL=(ALL) NOPASSWD:ALL\n"
+    owner: root
+    group: root
+    mode: "0440"
+
+- name: Add SSH public key for devops user
+  ansible.posix.authorized_key:
+    user: "{{ devops_user }}"
+    key: "{{ devops_public_key }}"
+    state: present

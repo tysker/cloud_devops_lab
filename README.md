@@ -81,7 +81,7 @@ The project is built in incremental stages. Each stage adds a new DevOps capabil
 - <s>Stage 2: Containerization with Docker</s>
 - <s>Stage 3: CI/CD pipeline (GitHub Actions)</s>
 - <s>Stage 4: Infrastructure (Terraform – servers, networking, firewalls)</s>
-- Stage 5: DNS & domain management (Cloudflare)
+- <s>Stage 5: DNS & domain management (Cloudflare)</s>
 - Stage 6: Ansible configuration (roles, hardening, deployments)
 - Stage 7: Monitoring stack (Prometheus & Grafana)
 - Stage 8: TLS certificates & reverse proxy
@@ -248,10 +248,11 @@ A chronological log describing the work done in each stage.
 
 ## Next Step
 
-- <s>Proceed To Stage 2: Containerization With Docker, Where The Application Will Be Packaged Into A Production-Ready Container Image.</s>
-- <s>Procced To Stage 3: CI/CD pipeline (GitHub Actions & GHCR Integration)</s>
-- <s>Procced To Stage 4: Infrastructure (Terraform – servers, networking, firewalls)</s>
-- Procced To Stage 5: DNS & domain management (Cloudflare)
+- <s>Proceed to Stage 2: Containerization With Docker, Where The Application Will Be Packaged Into A Production-Ready Container Image.</s>
+- <s>Procced to Stage 3: CI/CD pipeline (GitHub Actions & GHCR Integration)</s>
+- <s>Procced to Stage 4: Infrastructure (Terraform – servers, networking, firewalls)</s>
+- <s>Procced to Stage 5: DNS & domain management (Cloudflare)</s>
+- Procced to Stage 6: Ansible configuration (roles, hardening, deployments)
 
 ## Git Workflow & Conventions
 

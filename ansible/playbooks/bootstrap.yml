@@ -1,5 +1,7 @@
 - name: Bootstrap all servers
   hosts: all
   gather_facts: false
+  become: true
   roles:
     - common
+    - bootstrap_users

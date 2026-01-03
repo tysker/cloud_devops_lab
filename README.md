@@ -196,6 +196,34 @@ This stage establishes the baseline infrastructure but does not yet deploy appli
 The domain `clouddevopslab.eu` is registered at simply.com and delegated to Cloudflare
 for DNS management and security features.
 
+### Stage 6 — Ansible Bootstrap & Access Control
+
+**What:**  
+Introduced Ansible to centrally manage all servers using a bastion (jump host) model.
+Bootstrapped a non-root `devops` user with SSH key access and sudo privileges.
+
+**Why:**  
+Manual server configuration does not scale and is error-prone.
+Ansible provides reproducible, auditable configuration management and enforces
+least-privilege access by avoiding root logins.
+
+**How:**  
+- Configured Ansible inventory with a jump host (bastion pattern).
+- Enabled SSH agent forwarding for secure multi-hop access.
+- Created a reusable `common` role for connectivity checks.
+- Added a `bootstrap_users` role to:
+  - create a `devops` user
+  - configure passwordless sudo
+  - install SSH public keys
+- Switched Ansible to run as `devops` with privilege escalation (`become`).
+
+### Access Model
+
+- Direct SSH access is allowed only to the jump server.
+- All internal servers are accessed via the jump server using SSH agent forwarding.
+- Ansible connects as a non-root `devops` user and escalates privileges only when required.
+- Root login remains enabled temporarily and will be disabled in a later hardening stage.
+
 #### DNS Flow
 
 - Domain registered at simply.com
@@ -273,6 +301,14 @@ Examples:
 - `docs(readme): document phase 1 (Flask app)`
 - `infra(terraform): create linode instances for app and monitoring`
 - `ci(docker): add image build and push workflow`
+
+## Infrastructure Changes
+
+All infrastructure and configuration changes are performed via:
+- Terraform (provisioning)
+- Ansible (configuration)
+
+Manual changes on servers are avoided to ensure reproducibility.
 
 ## License
 

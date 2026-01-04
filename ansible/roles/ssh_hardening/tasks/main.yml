@@ -22,3 +22,12 @@
     line: "UsePAM yes"
     state: present
   notify: Restart SSH
+
+- name: Restrict SSH access to allowed users
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#?AllowUsers"
+    line: "AllowUsers devops root"
+    state: present
+    backup: yes
+  notify: Restart SSH

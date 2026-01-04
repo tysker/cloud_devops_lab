@@ -22,24 +22,42 @@ Current project layout:
 
 ```
 cloud_devops_lab/
+├── ansible
+│   ├── ansible.cfg
+│   ├── group_vars
+│   │   └── all.yml
+│   ├── hosts.ini
+│   ├── playbooks
+│   │   └── bootstrap.yml
+│   ├── README.md
+│   └── roles
+│       ├── bootstrap_users
+│       ├── common
+│       └── ssh_hardening
 ├── app
 │   ├── Dockerfile
+│   ├── requirements.txt
 │   ├── src
 │   │   ├── app.py
+│   │   ├── __init__.py
+│   │   ├── __pycache__
 │   │   ├── routes
 │   │   └── utils
 │   └── venv
+│       ├── bin
+│       ├── include
+│       ├── lib
+│       ├── lib64 -> lib
+│       └── pyvenv.cfg
 ├── infrastructure
 │   └── terraform
 │       ├── main.tf
 │       ├── modules
-│       │   └── compute
-│       │       ├── main.tf
-│       │       ├── outputs.tf
-│       │       ├── providers.tf
-│       │       └── variables.tf
 │       ├── outputs.tf
 │       ├── providers.tf
+│       ├── terraform.tfstate
+│       ├── terraform.tfstate.backup
+│       ├── terraform.tfvars
 │       └── variables.tf
 ├── LICENSE
 └── README.md

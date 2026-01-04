@@ -33,6 +33,7 @@ cloud_devops_lab/
 │   └── roles
 │       ├── bootstrap_users
 │       ├── common
+│       ├── docker
 │       └── ssh_hardening
 ├── app
 │   ├── Dockerfile
@@ -92,18 +93,19 @@ http://localhost:5000/
 
 The project is built in incremental stages. Each stage adds a new DevOps capability on top of the existing system.
 
-### Upcoming Stages
+### Stages Overview
 
-### Upcoming Stages
-
+- <s>Stage 1: Flask application</s>
 - <s>Stage 2: Containerization with Docker</s>
-- <s>Stage 3: CI/CD pipeline (GitHub Actions)</s>
+- <s>Stage 3: CI/CD pipeline (GitHub Actions & GHCR)</s>
 - <s>Stage 4: Infrastructure (Terraform – servers, networking, firewalls)</s>
 - <s>Stage 5: DNS & domain management (Cloudflare)</s>
-- Stage 6: Ansible configuration (roles, hardening, deployments)
-- Stage 7: Monitoring stack (Prometheus & Grafana)
-- Stage 8: TLS certificates & reverse proxy
-- Stage 9: Security improvements & hardening
+- <s>Stage 6: Ansible bootstrap & access control</s>
+- <s>Stage 7: SSH hardening</s>
+- <s>Stage 8: Docker installation (via Ansible)</s>
+- Stage 9: Application deployment
+- Stage 10: Monitoring stack (Prometheus & Grafana)
+- Stage 11: TLS certificates & reverse proxy
 
 ### Stage 1 — Flask Application
 
@@ -225,7 +227,8 @@ Manual server configuration does not scale and is error-prone.
 Ansible provides reproducible, auditable configuration management and enforces
 least-privilege access by avoiding root logins.
 
-**How:**  
+**How:**
+
 - Configured Ansible inventory with a jump host (bastion pattern).
 - Enabled SSH agent forwarding for secure multi-hop access.
 - Created a reusable `common` role for connectivity checks.
@@ -235,12 +238,50 @@ least-privilege access by avoiding root logins.
   - install SSH public keys
 - Switched Ansible to run as `devops` with privilege escalation (`become`).
 
+### Stage 7 — SSH Hardening
+
+**What:**  
+Hardened SSH access across all servers by disabling insecure authentication
+methods and enforcing least-privilege access.
+
+**Why:**  
+SSH is the primary attack surface on servers. Hardening reduces the risk of
+brute-force attacks, credential abuse, and privilege escalation.
+
+**How:**
+
+- Disabled password-based SSH authentication.
+- Disabled challenge-response authentication.
+- Restricted SSH access using an explicit `AllowUsers` list.
+- Disabled root SSH login entirely.
+- Enforced bastion-only access using a jump host.
+- Ensured Ansible operates as a non-root user with controlled privilege escalation.
+
+### Stage 8 — Docker Installation
+
+**What:**  
+Installed Docker Engine and Docker Compose plugin on application and monitoring servers.
+
+**Why:**  
+Containers provide consistent, reproducible runtime environments and are the foundation
+for application deployment and monitoring.
+
+**How:**
+
+- Installed Docker from the official Docker APT repository.
+- Enabled and started the Docker service.
+- Added the non-root `devops` user to the `docker` group.
+- Verified operation using `docker run hello-world`.
+
+Docker is intentionally not installed on the jump server.
+
 ### Access Model
 
 - Direct SSH access is allowed only to the jump server.
 - All internal servers are accessed via the jump server using SSH agent forwarding.
 - Ansible connects as a non-root `devops` user and escalates privileges only when required.
-- Root login remains enabled temporarily and will be disabled in a later hardening stage.
+- Root SSH login is fully disabled.
+- All access is performed via the non-root `devops` user with sudo escalation.
 
 #### DNS Flow
 
@@ -270,7 +311,10 @@ A chronological log describing the work done in each stage.
 - <s>Procced to Stage 3: CI/CD pipeline (GitHub Actions & GHCR Integration)</s>
 - <s>Procced to Stage 4: Infrastructure (Terraform – servers, networking, firewalls)</s>
 - <s>Procced to Stage 5: DNS & domain management (Cloudflare)</s>
-- Procced to Stage 6: Ansible configuration (roles, hardening, deployments)
+- <s>Procced to Stage 6: Ansible bootstrap & access control</s>
+- <s>Procced to Stage 7: SSH hardening</s>
+- <s>Procced to Stage 8: Docker installation (via Ansible)</s>
+- Procced to Stage 9 Application deployment using Docker and GHCR
 
 ## Git Workflow & Conventions
 
@@ -324,6 +368,7 @@ Examples:
 ## Infrastructure Changes
 
 All infrastructure and configuration changes are performed via:
+
 - Terraform (provisioning)
 - Ansible (configuration)
 

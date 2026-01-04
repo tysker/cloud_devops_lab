@@ -5,3 +5,11 @@
   roles:
     - common
     - bootstrap_users
+    - ssh_hardening
+
+- name: Install Docker on app and monitoring servers
+  hosts: app:monitoring
+  gather_facts: true
+  become: true
+  roles:
+    - docker

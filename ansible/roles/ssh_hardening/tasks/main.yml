@@ -1,0 +1,42 @@
+- name: Disable SSH password authentication
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#?PasswordAuthentication"
+    line: "PasswordAuthentication no"
+    state: present
+    backup: yes
+  notify: Restart SSH
+
+- name: Ensure ChallengeResponseAuthentication is disabled
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#?ChallengeResponseAuthentication"
+    line: "ChallengeResponseAuthentication no"
+    state: present
+  notify: Restart SSH
+
+- name: Ensure UsePAM is enabled (required for sudo)
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#?UsePAM"
+    line: "UsePAM yes"
+    state: present
+  notify: Restart SSH
+
+- name: Restrict SSH access to allowed users
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#?AllowUsers"
+    line: "AllowUsers devops"
+    state: present
+    backup: yes
+  notify: Restart SSH
+
+- name: Disable SSH root login
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#?PermitRootLogin"
+    line: "PermitRootLogin no"
+    state: present
+    backup: yes
+  notify: Restart SSH

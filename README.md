@@ -275,6 +275,20 @@ for application deployment and monitoring.
 
 Docker is intentionally not installed on the jump server.
 
+### Stage 9 — Application Deployment (Docker + Ansible)
+
+**What:**  
+Deployed the Flask application container to the application server using Ansible.
+
+**Why:**  
+A repeatable deployment reduces manual steps and ensures consistent environments.
+
+**How:**  
+- Pulled a pinned image tag from GHCR (`ghcr.io/tysker/cloud_devops_app:77ecd38`).
+- Ran the container with `restart: unless-stopped`.
+- Exposed HTTP on port 80 mapped to container port 5000.
+- Added an Ansible health check against `/health`.
+
 ### Access Model
 
 - Direct SSH access is allowed only to the jump server.

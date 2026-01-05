@@ -103,7 +103,7 @@ The project is built in incremental stages. Each stage adds a new DevOps capabil
 - <s>Stage 6: Ansible bootstrap & access control</s>
 - <s>Stage 7: SSH hardening</s>
 - <s>Stage 8: Docker installation (via Ansible)</s>
-- Stage 9: Application deployment
+- <s>Stage 9: Application deployment</s>
 - Stage 10: Monitoring stack (Prometheus & Grafana)
 - Stage 11: TLS certificates & reverse proxy
 
@@ -275,6 +275,20 @@ for application deployment and monitoring.
 
 Docker is intentionally not installed on the jump server.
 
+### Stage 9 — Application Deployment (Docker + Ansible)
+
+**What:**  
+Deployed the Flask application container to the application server using Ansible.
+
+**Why:**  
+A repeatable deployment reduces manual steps and ensures consistent environments.
+
+**How:**  
+- Pulled a pinned image tag from GHCR (`ghcr.io/tysker/cloud_devops_app:77ecd38`).
+- Ran the container with `restart: unless-stopped`.
+- Exposed HTTP on port 80 mapped to container port 5000.
+- Added an Ansible health check against `/health`.
+
 ### Access Model
 
 - Direct SSH access is allowed only to the jump server.
@@ -314,7 +328,8 @@ A chronological log describing the work done in each stage.
 - <s>Procced to Stage 6: Ansible bootstrap & access control</s>
 - <s>Procced to Stage 7: SSH hardening</s>
 - <s>Procced to Stage 8: Docker installation (via Ansible)</s>
-- Procced to Stage 9 Application deployment using Docker and GHCR
+- <s>Procced to Stage 9: Application deployment using Docker and GHCR</s>
+- Procced to Stage 10: Stage 10: Monitoring stack (Prometheus & Grafana)
 
 ## Git Workflow & Conventions
 

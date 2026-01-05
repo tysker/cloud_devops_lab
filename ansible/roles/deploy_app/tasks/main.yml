@@ -1,0 +1,32 @@
+- name: (Optional) Login to GHCR
+  community.docker.docker_login:
+    registry_url: ghcr.io
+    username: "{{ ghcr_username }}"
+    password: "{{ ghcr_token }}"
+  when:
+    - ghcr_username is defined
+    - ghcr_token is defined
+    - ghcr_token | length > 0
+
+- name: Pull application image
+  community.docker.docker_image:
+    name: "{{ app_image }}"
+    source: pull
+
+- name: Ensure application container is running
+  community.docker.docker_container:
+    name: "{{ app_container_name }}"
+    image: "{{ app_image }}"
+    state: started
+    restart_policy: unless-stopped
+    ports:
+      - "{{ app_public_port }}:{{ app_container_port }}"
+
+- name: Wait for /health to return 200 on the server
+  ansible.builtin.uri:
+    url: "http://localhost/health"
+    status_code: 200
+  register: healthcheck
+  retries: 10
+  delay: 2
+  until: healthcheck.status == 200

@@ -103,7 +103,7 @@ The project is built in incremental stages. Each stage adds a new DevOps capabil
 - <s>Stage 6: Ansible bootstrap & access control</s>
 - <s>Stage 7: SSH hardening</s>
 - <s>Stage 8: Docker installation (via Ansible)</s>
-- Stage 9: Application deployment
+- <s>Stage 9: Application deployment</s>
 - Stage 10: Monitoring stack (Prometheus & Grafana)
 - Stage 11: TLS certificates & reverse proxy
 
@@ -328,7 +328,8 @@ A chronological log describing the work done in each stage.
 - <s>Procced to Stage 6: Ansible bootstrap & access control</s>
 - <s>Procced to Stage 7: SSH hardening</s>
 - <s>Procced to Stage 8: Docker installation (via Ansible)</s>
-- Procced to Stage 9 Application deployment using Docker and GHCR
+- <s>Procced to Stage 9: Application deployment using Docker and GHCR</s>
+- Procced to Stage 10: Stage 10: Monitoring stack (Prometheus & Grafana)
 
 ## Git Workflow & Conventions
 

@@ -22,6 +22,7 @@ COPY --from=builder /usr/local /usr/local
 
 # Copy application
 COPY src ./src
+COPY gunicorn.conf.py ./gunicorn.conf.py
 
 RUN chown -R appuser:appuser /app
 
@@ -30,9 +31,8 @@ USER appuser
 
 EXPOSE 5000
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD curl -f http://localhost:5000/health || exit 1
 
 # Production command using Gunicorn
-CMD ["gunicorn", "--chdir", "src", "app:app", "--bind", "0.0.0.0:5000"]
-
+CMD ["gunicorn", "--config", "/app/gunicorn.conf.py", "--chdir", "src", "app:app"]

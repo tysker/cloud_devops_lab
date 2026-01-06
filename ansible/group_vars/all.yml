@@ -1,9 +1,15 @@
 ansible_python_interpreter: /usr/bin/python3
+
+# role
 devops_user: devops
 devops_public_key: "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/linode.pub') }}"
+
+# app image
 app_image: "ghcr.io/tysker/cloud_devops_app:77ecd38"
 app_container_name: "cloud-devops-app"
 app_container_port: 5000
 app_public_port: 80
+
+# github account
 ghcr_username: "tysker"
 ghcr_token: "{{ lookup('env', 'GHCR_TOKEN') }}"

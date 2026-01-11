@@ -1,10 +1,8 @@
-- name: Bootstrap all servers
+- name: Harden SSH (after devops exists)
   hosts: all
-  gather_facts: false
+  remote_user: devops
   become: true
   roles:
-    - common
-    - bootstrap_users
     - ssh_hardening
 
 - name: Install Docker on app and monitoring servers

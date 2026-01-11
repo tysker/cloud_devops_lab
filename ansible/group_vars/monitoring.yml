@@ -1,4 +1,10 @@
+# prometheus
 prometheus_image: "prom/prometheus:v2.52.0"
 prometheus_port: 9090
 prometheus_config_dir: "/opt/prometheus"
 prometheus_data_dir: "/opt/prometheus/data"
+
+# grafana
+grafana_image: "grafana/grafana:10.4.3"
+grafana_port: 3000
+grafana_data_dir: "/opt/grafana/data"

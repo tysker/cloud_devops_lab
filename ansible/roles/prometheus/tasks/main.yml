@@ -23,6 +23,7 @@
     name: prometheus
     image: "{{ prometheus_image }}"
     state: started
+    recreate: true
     restart_policy: unless-stopped
     network_mode: host
     command:

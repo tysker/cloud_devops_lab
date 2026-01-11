@@ -1,6 +1,7 @@
 - name: Deploy Prometheus on monitoring server
   hosts: monitoring
   gather_facts: true
+  remote_user: devops
   become: true
   roles:
     - prometheus

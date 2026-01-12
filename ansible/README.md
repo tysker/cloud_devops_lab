@@ -12,10 +12,12 @@ all servers in the Cloud DevOps Lab.
 ## Roles
 
 ### common
+
 - Verifies basic connectivity (`ping`)
 - Used as a baseline dependency for all other roles
 
 ### bootstrap_users
+
 - Creates a non-root `devops` user
 - Adds the user to the `sudo` group
 - Configures passwordless sudo (temporary)
@@ -26,5 +28,5 @@ all servers in the Cloud DevOps Lab.
 Run from the `ansible/` directory:
 
 ```bash
-ansible-playbook playbooks/bootstrap.yml
+ansible-playbook playbooks/....
 ```

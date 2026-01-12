@@ -1,43 +1,9 @@
-# resource "linode_instance" "jump" {
-#   label  = "${var.project_name}-${var.environment}-jump"
-#   region = var.region
-#   type   = var.instance_type
-#   image  = var.image
-#
-#   authorized_keys = [chomp(file(var.ssh_public_key_path))]
-#
-#   private_ip = true
-# }
-#
-# resource "linode_instance" "app" {
-#   label  = "${var.project_name}-${var.environment}-app"
-#   region = var.region
-#   type   = var.instance_type
-#   image  = var.image
-#
-#   authorized_keys = [chomp(file(var.ssh_public_key_path))]
-#
-#
-#   private_ip = true
-# }
-#
-# resource "linode_instance" "monitoring" {
-#   label  = "${var.project_name}-${var.environment}-monitoring"
-#   region = var.region
-#   type   = var.instance_type
-#   image  = var.image
-#
-#   authorized_keys = [chomp(file(var.ssh_public_key_path))]
-#
-#   private_ip = true
-# }
-
 module "jump" {
   source = "./modules/compute"
 
   label           = "${var.project_name}-${var.environment}-jump"
   region          = var.region
-  instance_type   = var.instance_type
+  instance_type   = var.instance_type_1gb
   image           = var.image
   authorized_keys = [chomp(file(var.ssh_public_key_path))]
 }
@@ -47,7 +13,7 @@ module "app" {
 
   label           = "${var.project_name}-${var.environment}-app"
   region          = var.region
-  instance_type   = var.instance_type
+  instance_type   = var.instance_type_2gb
   image           = var.image
   authorized_keys = [chomp(file(var.ssh_public_key_path))]
 }
@@ -57,7 +23,7 @@ module "monitoring" {
 
   label           = "${var.project_name}-${var.environment}-monitoring"
   region          = var.region
-  instance_type   = var.instance_type
+  instance_type   = var.instance_type_2gb
   image           = var.image
   authorized_keys = [chomp(file(var.ssh_public_key_path))]
 }
@@ -98,6 +64,14 @@ resource "linode_firewall" "app_fw" {
     ipv4     = ["192.168.0.0/16"]
   }
 
+  inbound {
+    label    = "allow-http"
+    action   = "ACCEPT"
+    protocol = "TCP"
+    ports    = "80"
+    ipv4     = ["0.0.0.0/0"]
+  }
+
   inbound_policy  = "DROP"
   outbound_policy = "ACCEPT"
 
@@ -121,14 +95,6 @@ resource "linode_firewall" "monitoring_fw" {
     protocol = "TCP"
     ports    = "1-65535"
     ipv4     = ["192.168.0.0/16"]
-  }
-
-  inbound {
-    label    = "allow-http"
-    action   = "ACCEPT"
-    protocol = "TCP"
-    ports    = "80"
-    ipv4     = ["0.0.0.0/0"]
   }
 
   inbound_policy  = "DROP"

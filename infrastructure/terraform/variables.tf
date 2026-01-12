@@ -10,10 +10,16 @@ variable "region" {
   default     = "eu-central"
 }
 
-variable "instance_type" {
-  description = "Linode instance type"
+variable "instance_type_1gb" {
+  description = "Linode instance type 1GB ram"
   type        = string
   default     = "g6-nanode-1"
+}
+
+variable "instance_type_2gb" {
+  description = "Linode instance type 2GB ram"
+  type        = string
+  default     = "g6-standard-1"
 }
 
 variable "ssh_public_key_path" {

@@ -29,7 +29,7 @@ completed, what is in progress, and what belongs to future expansion.
 - [x] Cloudflare in DNS-only mode (proxy disabled)
 - [ ] Terraform-managed DNS records (Cloudflare provider)
 - [ ] Stable DNS target via reserved IP
-- [ ] Decide exposure model for monitoring (private vs public)
+- [x] Decide exposure model for monitoring (private vs public)
 
 ---
 
@@ -124,19 +124,24 @@ completed, what is in progress, and what belongs to future expansion.
 
 ### Prometheus
 
-- [ ] Prometheus deployed on monitoring server
-- [ ] Scrape node exporters
-- [ ] Scrape application metrics
-- [ ] Retention and storage configured
-- [ ] Alert rules defined
+- [x] Prometheus deployed on monitoring server
+- [x] Scrape node exporters (app + monitoring via private IPs)
+- [x] Scrape application metrics (`/metrics` scraped as job `flask_app`)
+- [ ] Retention and storage tuned/configured explicitly (beyond defaults)
+- [ ] Alert rules definedned
 
 ### Grafana
 
-- [ ] Grafana deployed on monitoring server
-- [ ] Prometheus datasource configured
-- [ ] Node exporter dashboards imported
-- [ ] App dashboards created
-- [ ] Access control (auth / private access)
+### Grafana
+
+- [x] Grafana deployed on monitoring server
+- [x] Prometheus datasource configured
+- [x] Node exporter dashboards imported
+- [x] App dashboards created (custom panels for `flask_app`):
+  - `process_resident_memory_bytes`
+  - `rate(process_cpu_seconds_total[5m])`
+  - `rate(python_gc_objects_collected_total[5m])`
+- [ ] Access control hardening (no default creds, users/roles; still private via SSH tunnel)
 
 ---
 

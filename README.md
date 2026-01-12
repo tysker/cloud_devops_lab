@@ -3,7 +3,9 @@
 ## Project Description
 
 This repository is a complete end-to-end DevOps learning project built around a small Python Flask
-application. The goal is to gradually build a realistic production-like environment that includes:
+application. All access follows a bastion-based, non-root security model. 
+
+The goal is to gradually build a realistic production-like environment that includes:
 
 - containerization with Docker
 - CI/CD pipelines (GitHub Actions)
@@ -16,6 +18,8 @@ application. The goal is to gradually build a realistic production-like environm
 The project grows in clear stages. Each stage is documented with **what was done**, **why it matters**,
 and **how it was implemented**, so it becomes both a learning journal and a portfolio project.
 
+**Current status:** Stages 1–10 completed. Application is deployed, monitored with Prometheus and Grafana, and accessible via HTTP. Next step: TLS and reverse proxy.
+
 ## Structure
 
 Current project layout:
@@ -24,19 +28,32 @@ Current project layout:
 cloud_devops_lab/
 ├── ansible
 │   ├── ansible.cfg
+│   ├── ansible.log
 │   ├── group_vars
-│   │   └── all.yml
+│   │   ├── all.yml
+│   │   ├── app.yml
+│   │   └── monitoring.yml
 │   ├── hosts.ini
 │   ├── playbooks
-│   │   └── bootstrap.yml
+│   │   ├── bootstrap_1.yml
+│   │   ├── bootstrap_2.yml
+│   │   ├── deploy_app.yml
+│   │   ├── monitoring_grafana.yml
+│   │   ├── monitoring_node_exporter.yml
+│   │   └── monitoring_prometheus.yml
 │   ├── README.md
 │   └── roles
-│       ├── bootstrap_users
+│       ├── bootstrap_user
 │       ├── common
+│       ├── deploy_app
 │       ├── docker
+│       ├── grafana
+│       ├── node_exporter
+│       ├── prometheus
 │       └── ssh_hardening
 ├── app
 │   ├── Dockerfile
+│   ├── gunicorn.conf.py
 │   ├── requirements.txt
 │   ├── src
 │   │   ├── app.py
@@ -50,6 +67,8 @@ cloud_devops_lab/
 │       ├── lib
 │       ├── lib64 -> lib
 │       └── pyvenv.cfg
+├── docs
+│   └── project-checklist.md
 ├── infrastructure
 │   └── terraform
 │       ├── main.tf
@@ -74,6 +93,8 @@ cloud_devops_lab/
 - Linode for server hosting
 - Cloudflare (DNS)
 - Domain registrar
+- Grafana
+- Prometheus
 
 ## Running the Application Locally
 
@@ -104,8 +125,8 @@ The project is built in incremental stages. Each stage adds a new DevOps capabil
 - <s>Stage 7: SSH hardening</s>
 - <s>Stage 8: Docker installation (via Ansible)</s>
 - <s>Stage 9: Application deployment</s>
-- Stage 10: Monitoring stack (Prometheus & Grafana)
-- Stage 11: TLS certificates & reverse proxy
+- <s>Stage 10: Monitoring stack (Prometheus & Grafana)</s>
+- Stage 11: TLS certificates & reverse proxy (Caddy)
 
 ### Stage 1 — Flask Application
 
@@ -143,7 +164,6 @@ foundation for CI/CD pipelines, registries, deployment automation, and infrastru
 1. Build image: `docker build -t cloud-devops-app:0.1 .`
 2. Run container: `docker run -p 5000:5000 cloud-devops-app:0.1`
 3. Test health endpoint: `curl http://localhost:5000/health`
-4. Test metrics: `curl http://localhost:5000/metrics/custom`
 
 ### Stage 3 — CI/CD Pipeline (GHCR Integration)
 
@@ -289,6 +309,74 @@ A repeatable deployment reduces manual steps and ensures consistent environments
 - Exposed HTTP on port 80 mapped to container port 5000.
 - Added an Ansible health check against `/health`.
 
+### Stage 10 — Monitoring stack (Prometheus & Grafana)
+
+This stage introduces full observability for both the infrastructure and the application.
+
+#### Part 1 — Node Exporter
+
+**What:**  
+Deployed Node Exporter on the application and monitoring servers.
+
+**Why:**  
+Host-level metrics (CPU, memory, disk, network) are essential for understanding system health and capacity.
+
+**How:**  
+- Installed Node Exporter via Docker using Ansible.
+- Metrics exposed on port `9100`.
+- Targets scraped via private IPs.
+
+---
+
+#### Part 2 — Prometheus
+
+**What:**  
+Deployed Prometheus on the monitoring server.
+
+**Why:**  
+Prometheus acts as the central metrics collection and storage system.
+
+**How:**  
+- Prometheus deployed via Docker using Ansible.
+- Configuration rendered from a template (`prometheus.yml`).
+- Scrapes:
+  - Node Exporter on app + monitoring servers
+  - Flask application metrics
+- Persistent data directory mounted on the host.
+
+---
+
+#### Part 3 — Grafana
+
+**What:**  
+Deployed Grafana for metrics visualization.
+
+**Why:**  
+Metrics are only useful if they can be explored and visualized effectively.
+
+**How:**  
+- Grafana deployed via Docker using Ansible.
+- Prometheus configured as a data source.
+- Access restricted to SSH port forwarding (no public exposure).
+- Imported **Node Exporter Full** dashboard (ID 1860).
+
+---
+
+#### Part 4 — Flask application metrics
+
+**What:**  
+Exposed application metrics in Prometheus format.
+
+**Why:**  
+Application-level observability enables insight into runtime behavior, performance, and stability.
+
+**How:**  
+- Added `/metrics` endpoint using `prometheus_client`.
+- Removed the earlier JSON-based metrics endpoint.
+- Prometheus scrapes the app at:
+  - `http://<app_private_ip>:80/metrics`
+- Metrics verified in Prometheus and visualized in Grafana.
+
 ### Access Model
 
 - Direct SSH access is allowed only to the jump server.
@@ -329,7 +417,12 @@ A chronological log describing the work done in each stage.
 - <s>Procced to Stage 7: SSH hardening</s>
 - <s>Procced to Stage 8: Docker installation (via Ansible)</s>
 - <s>Procced to Stage 9: Application deployment using Docker and GHCR</s>
-- Procced to Stage 10: Stage 10: Monitoring stack (Prometheus & Grafana)
+- <s>Procced to Stage 10: Stage 10: Monitoring stack (Prometheus & Grafana)</s>
+- Procced to Stage 11: TLS certificates & reverse proxy (Caddy)
+
+Stage 11 will introduce HTTPS, automatic TLS certificates, and a reverse proxy
+in front of the application. This enables secure traffic, prepares the setup
+for Cloudflare proxying, and allows stricter firewall rules on the application server.
 
 ## Git Workflow & Conventions
 

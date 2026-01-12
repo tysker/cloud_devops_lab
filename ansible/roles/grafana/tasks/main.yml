@@ -1,0 +1,21 @@
+- name: Ensure Grafana data directory exists
+  ansible.builtin.file:
+    path: "{{ grafana_data_dir }}"
+    state: directory
+    owner: "472"
+    group: "472"
+    mode: "0755"
+
+- name: Ensure Grafana container is running
+  community.docker.docker_container:
+    name: grafana
+    image: "{{ grafana_image }}"
+    state: started
+    restart_policy: unless-stopped
+    network_mode: host
+    volumes:
+      - "{{ grafana_data_dir }}:/var/lib/grafana"
+    env:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"

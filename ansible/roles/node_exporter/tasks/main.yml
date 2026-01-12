@@ -1,0 +1,12 @@
+- name: Ensure Node Exporter container is running
+  community.docker.docker_container:
+    name: node-exporter
+    image: "{{ node_exporter_image }}"
+    state: started
+    restart_policy: unless-stopped
+    network_mode: host
+    pid_mode: host
+    read_only: true
+    command: ["--path.rootfs=/host"]
+    volumes:
+      - "/:/host:ro,rslave"

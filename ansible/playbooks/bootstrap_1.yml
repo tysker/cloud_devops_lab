@@ -1,0 +1,6 @@
+- name: Bootstrap all server (initial)
+  hosts: all
+  remote_user: root
+  roles:
+    - common
+    - bootstrap_user

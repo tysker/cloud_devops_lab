@@ -1,5 +1,6 @@
 - name: Deploy Grafana on monitoring server
   hosts: monitoring
+  remote_user: devops
   gather_facts: true
   become: true
   roles:

@@ -64,6 +64,14 @@ resource "linode_firewall" "app_fw" {
     ipv4     = ["192.168.0.0/16"]
   }
 
+  inbound {
+    label    = "allow-http"
+    action   = "ACCEPT"
+    protocol = "TCP"
+    ports    = "80"
+    ipv4     = ["0.0.0.0/0"]
+  }
+
   inbound_policy  = "DROP"
   outbound_policy = "ACCEPT"
 
@@ -87,14 +95,6 @@ resource "linode_firewall" "monitoring_fw" {
     protocol = "TCP"
     ports    = "1-65535"
     ipv4     = ["192.168.0.0/16"]
-  }
-
-  inbound {
-    label    = "allow-http"
-    action   = "ACCEPT"
-    protocol = "TCP"
-    ports    = "80"
-    ipv4     = ["0.0.0.0/0"]
   }
 
   inbound_policy  = "DROP"

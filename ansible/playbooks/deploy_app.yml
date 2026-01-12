@@ -1,5 +1,6 @@
 - name: Deploy Flask app container
   hosts: app
+  remote_user: devops
   gather_facts: true
   become: true
   roles:

@@ -1,0 +1,8 @@
+---
+- name: Caddy directories for domain certification
+  hosts: app
+  remote_user: devops
+  become: true
+  roles:
+    - caddy
+...

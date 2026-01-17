@@ -1,3 +1,4 @@
+---
 - name: Deploy Prometheus on monitoring server
   hosts: monitoring
   gather_facts: true
@@ -5,3 +6,4 @@
   become: true
   roles:
     - prometheus
+...

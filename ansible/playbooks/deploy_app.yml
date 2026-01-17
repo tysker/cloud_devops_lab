@@ -1,3 +1,4 @@
+---
 - name: Deploy Flask app container
   hosts: app
   remote_user: devops
@@ -5,3 +6,4 @@
   become: true
   roles:
     - deploy_app
+...

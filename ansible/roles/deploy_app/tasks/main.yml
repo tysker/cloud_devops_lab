@@ -1,3 +1,4 @@
+---
 - name: (Optional) Login to GHCR
   community.docker.docker_login:
     registry_url: ghcr.io
@@ -19,14 +20,16 @@
     image: "{{ app_image }}"
     state: started
     restart_policy: unless-stopped
+    recreate: true
     ports:
-      - "{{ app_public_port }}:{{ app_container_port }}"
+      - "127.0.0.1:{{ app_public_port }}:{{ app_container_port }}"
 
 - name: Wait for /health to return 200 on the server
   ansible.builtin.uri:
-    url: "http://localhost/health"
+    url: "http://127.0.0.1:{{ app_container_port }}/health"
     status_code: 200
   register: healthcheck
   retries: 10
   delay: 2
   until: healthcheck.status == 200
+...

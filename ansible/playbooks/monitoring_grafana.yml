@@ -1,3 +1,4 @@
+---
 - name: Deploy Grafana on monitoring server
   hosts: monitoring
   remote_user: devops
@@ -5,3 +6,4 @@
   become: true
   roles:
     - grafana
+...

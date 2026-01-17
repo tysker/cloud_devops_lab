@@ -1,10 +1,11 @@
+---
 - name: Disable SSH password authentication
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: "^#?PasswordAuthentication"
     line: "PasswordAuthentication no"
     state: present
-    backup: yes
+    backup: true
   notify: Restart SSH
 
 - name: Ensure ChallengeResponseAuthentication is disabled
@@ -29,7 +30,7 @@
     regexp: "^#?AllowUsers"
     line: "AllowUsers devops"
     state: present
-    backup: yes
+    backup: true
   notify: Restart SSH
 
 - name: Disable SSH root login
@@ -38,5 +39,6 @@
     regexp: "^#?PermitRootLogin"
     line: "PermitRootLogin no"
     state: present
-    backup: yes
+    backup: true
   notify: Restart SSH
+...

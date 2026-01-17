@@ -1,0 +1,34 @@
+---
+- name: Ensure Caddy directories exist
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - "{{ caddy_config_dir }}"
+    - "{{ caddy_data_dir }}"
+
+- name: Render Caddy configuration
+  ansible.builtin.template:
+    src: caddyfile.yml.j2
+    dest: "/opt/caddy/Caddyfile"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Ensure Caddy container is running
+  community.docker.docker_container:
+    name: caddy
+    image: "{{ caddy_image }}"
+    state: started
+    restart_policy: unless-stopped
+    network_mode: host
+    recreate: true
+    volumes:
+      - "/opt/caddy/Caddyfile:/etc/caddy/Caddyfile:ro"
+      - "{{ caddy_config_dir }}:/config"
+      - "{{ caddy_data_dir }}:/data"
+...

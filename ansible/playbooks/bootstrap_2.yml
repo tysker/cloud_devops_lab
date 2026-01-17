@@ -1,3 +1,4 @@
+---
 - name: Harden SSH (after devops exists)
   hosts: all
   remote_user: devops
@@ -12,3 +13,4 @@
   become: true
   roles:
     - docker
+...

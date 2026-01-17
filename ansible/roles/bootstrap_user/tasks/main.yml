@@ -1,3 +1,4 @@
+---
 - name: Ensure devops user exists
   ansible.builtin.user:
     name: "{{ devops_user }}"
@@ -19,3 +20,4 @@
     user: "{{ devops_user }}"
     key: "{{ devops_public_key }}"
     state: present
+...

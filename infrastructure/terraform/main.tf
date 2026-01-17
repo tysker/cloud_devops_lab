@@ -65,6 +65,14 @@ resource "linode_firewall" "app_fw" {
   }
 
   inbound {
+    label    = "allow-https"
+    action   = "ACCEPT"
+    protocol = "TCP"
+    ports    = "443"
+    ipv4     = ["0.0.0.0/0"]
+  }
+
+  inbound {
     label    = "allow-http"
     action   = "ACCEPT"
     protocol = "TCP"

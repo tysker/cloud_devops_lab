@@ -1,2 +1,4 @@
+---
 - name: Ensure system is reachable
   ping:
+...

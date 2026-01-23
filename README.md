@@ -18,7 +18,7 @@ The goal is to gradually build a realistic production-like environment that incl
 The project grows in clear stages. Each stage is documented with **what was done**, **why it matters**,
 and **how it was implemented**, so it becomes both a learning journal and a portfolio project.
 
-**Current status:** Stages 1–10 completed. Application is deployed, monitored with Prometheus and Grafana, and accessible via HTTP. Next step: TLS and reverse proxy.
+**Current status:** Stages 1–11 completed. Application is deployed and monitored (Prometheus + Grafana), and served via HTTPS using Caddy + Let’s Encrypt. SSH access is restricted to a bastion host and allow listed source IPs.
 
 ## Structure
 
@@ -26,61 +26,71 @@ Current project layout:
 
 ```
 cloud_devops_lab/
-├── ansible
-│   ├── ansible.cfg
-│   ├── ansible.log
-│   ├── group_vars
-│   │   ├── all.yml
-│   │   ├── app.yml
-│   │   └── monitoring.yml
-│   ├── hosts.ini
-│   ├── playbooks
-│   │   ├── bootstrap_1.yml
-│   │   ├── bootstrap_2.yml
-│   │   ├── deploy_app.yml
-│   │   ├── monitoring_grafana.yml
-│   │   ├── monitoring_node_exporter.yml
-│   │   └── monitoring_prometheus.yml
-│   ├── README.md
-│   └── roles
-│       ├── bootstrap_user
-│       ├── common
-│       ├── deploy_app
-│       ├── docker
-│       ├── grafana
-│       ├── node_exporter
-│       ├── prometheus
-│       └── ssh_hardening
-├── app
-│   ├── Dockerfile
-│   ├── gunicorn.conf.py
-│   ├── requirements.txt
-│   ├── src
-│   │   ├── app.py
-│   │   ├── __init__.py
-│   │   ├── __pycache__
-│   │   ├── routes
-│   │   └── utils
-│   └── venv
-│       ├── bin
-│       ├── include
-│       ├── lib
-│       ├── lib64 -> lib
-│       └── pyvenv.cfg
-├── docs
-│   └── project-checklist.md
-├── infrastructure
-│   └── terraform
-│       ├── main.tf
-│       ├── modules
-│       ├── outputs.tf
-│       ├── providers.tf
-│       ├── terraform.tfstate
-│       ├── terraform.tfstate.backup
-│       ├── terraform.tfvars
-│       └── variables.tf
-├── LICENSE
-└── README.md
+    ├── ansible
+    │   ├── ansible.cfg
+    │   ├── ansible.log
+    │   ├── group_vars
+    │   │   ├── all
+    │   │   │   └── vars.yml
+    │   │   ├── app
+    │   │   │   └── vars.yml
+    │   │   └── monitoring
+    │   │       ├── vars.yml
+    │   │       └── vault.yml
+    │   ├── hosts.ini
+    │   ├── playbooks
+    │   │   ├── bootstrap_1.yml
+    │   │   ├── bootstrap_2.yml
+    │   │   ├── caddy.yml
+    │   │   ├── deploy_app.yml
+    │   │   ├── monitoring_grafana.yml
+    │   │   ├── monitoring_node_exporter.yml
+    │   │   ├── monitoring_prometheus.yml
+    │   │   ├── security_fail2ban.yml
+    │   │   └── unattended_upgrades.yml
+    │   ├── README.md
+    │   └── roles
+    │       ├── bootstrap_user
+    │       ├── caddy
+    │       ├── common
+    │       ├── deploy_app
+    │       ├── docker
+    │       ├── fail2ban
+    │       ├── grafana
+    │       ├── node_exporter
+    │       ├── prometheus
+    │       ├── ssh_hardening
+    │       └── unattended_upgrades
+    ├── app
+    │   ├── Dockerfile
+    │   ├── gunicorn.conf.py
+    │   ├── requirements.txt
+    │   ├── src
+    │   │   ├── app.py
+    │   │   ├── routes
+    │   │   │   ├── health.py
+    │   │   │   ├── metrics.py
+    │   │   │   └── root.py
+    │   │   └── utils
+    │   │       ├── counters.py
+    │   └── venv
+    ├── docs
+    │   └── project-checklist.md
+    ├── IAAS.md
+    ├── infrastructure
+    │   └── terraform
+    │       ├── main.tf
+    │       ├── modules
+    │       │   └── compute
+    │       ├── outputs.tf
+    │       ├── providers.tf
+    │       ├── terraform.tfstate
+    │       ├── terraform.tfstate.backup
+    │       ├── terraform.tfvars
+    │       └── variables.tf
+    ├── LICENSE
+    └── README.md
+
 ```
 
 ## Requirements (current)
@@ -126,7 +136,7 @@ The project is built in incremental stages. Each stage adds a new DevOps capabil
 - <s>Stage 8: Docker installation (via Ansible)</s>
 - <s>Stage 9: Application deployment</s>
 - <s>Stage 10: Monitoring stack (Prometheus & Grafana)</s>
-- Stage 11: TLS certificates & reverse proxy (Caddy)
+- <s>Stage 11: TLS certificates & reverse proxy (Caddy))</s>
 
 ### Stage 1 — Flask Application
 
@@ -226,6 +236,9 @@ infrastructure
     │       └── variables.tf
     ├── outputs.tf
     ├── providers.tf
+    ├── terraform.tfstate
+    ├── terraform.tfstate.backup
+    ├── terraform.tfvars
     └── variables.tf
 ```
 
@@ -377,6 +390,41 @@ Application-level observability enables insight into runtime behavior, performan
   - `http://<app_private_ip>:80/metrics`
 - Metrics verified in Prometheus and visualized in Grafana.
 
+### Stage 11 — TLS certificates & reverse proxy (Caddy) + hardening
+
+This stage secures the application with HTTPS and adds additional server hardening.
+
+#### Part 1 — Reverse proxy + HTTPS (Caddy)
+
+**What:**  
+Deployed Caddy on the application server to act as a reverse proxy and terminate TLS.
+
+**Why:**  
+HTTPS is required for production-like deployments. A reverse proxy enables secure traffic, clean routing, and allows the application container to stay private (localhost only).
+
+**How:**  
+- Opened inbound port 443 on the application firewall.
+- Deployed Caddy via Ansible using Docker (`network_mode: host`).
+- Configured Caddy to serve:
+  - `clouddevopslab.eu` and `www.clouddevopslab.eu` via HTTPS (Let’s Encrypt)
+  - private-IP HTTP access for Prometheus scraping
+- Added basic security headers in the Caddyfile.
+- Updated app deployment so the Flask container is bound to `127.0.0.1:5000` (not publicly reachable).
+
+#### Part 2 — Stage 11 hardening (Option A)
+
+**What:**  
+Implemented baseline security hardening for the environment.
+
+**Why:**  
+Reduce attack surface and align with least-privilege and operational security practices.
+
+**How:**  
+- Restricted SSH access to the jump server using a Terraform allowlist (`ssh_allowed_ips`).
+- Installed and enabled Fail2ban on the jump server (`sshd` jail).
+- Enabled automatic security updates (`unattended-upgrades`) on all servers.
+- Moved Grafana admin password into **Ansible Vault** (no secrets stored in Git).
+
 ### Access Model
 
 - Direct SSH access is allowed only to the jump server.
@@ -397,7 +445,7 @@ Application-level observability enables insight into runtime behavior, performan
 - `clouddevopslab.eu` → A record → application server
 - `www.clouddevopslab.eu` → A record → application server
 
-At this stage, DNS records exist but application traffic is not yet exposed.
+At this stage, DNS records exist and the application is reachable via HTTPS through Caddy. Cloudflare proxy is still disabled (DNS-only).
 
 Note: During early stages, application IP addresses may change when infrastructure
 is recreated. A reserved IPv4 address will be introduced later to provide a stable
@@ -418,7 +466,8 @@ A chronological log describing the work done in each stage.
 - <s>Procced to Stage 8: Docker installation (via Ansible)</s>
 - <s>Procced to Stage 9: Application deployment using Docker and GHCR</s>
 - <s>Procced to Stage 10: Stage 10: Monitoring stack (Prometheus & Grafana)</s>
-- Procced to Stage 11: TLS certificates & reverse proxy (Caddy)
+- <s>Proceeded to Stage 11: TLS certificates & reverse proxy (Caddy)</s>
+- Next: Stage 12: Cloudflare proxy + restrict origin access to Cloudflare IP ranges
 
 Stage 11 will introduce HTTPS, automatic TLS certificates, and a reverse proxy
 in front of the application. This enables secure traffic, prepares the setup
@@ -468,7 +517,7 @@ Types used in this project:
 
 Examples:
 
-- `feat(api): add /metrics/custom endpoint`
+- `feat(api): add /metrics endpoint`
 - `docs(readme): document phase 1 (Flask app)`
 - `infra(terraform): create linode instances for app and monitoring`
 - `ci(docker): add image build and push workflow`

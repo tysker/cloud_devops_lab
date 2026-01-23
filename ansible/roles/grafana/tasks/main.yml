@@ -20,4 +20,10 @@
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: admin
       GF_USERS_ALLOW_SIGN_UP: "false"
+
+- name: Reset Grafana admin password
+  community.docker.docker_container_exec:
+    container: grafana
+    command: >
+      grafana-cli admin reset-admin-password {{ grafana_admin_password }}
 ...

@@ -17,3 +17,4 @@ variable "image" {
 variable "authorized_keys" {
   type = list(string)
 }
+

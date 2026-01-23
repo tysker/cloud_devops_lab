@@ -44,3 +44,8 @@ variable "image" {
   type        = string
   default     = "linode/ubuntu22.04"
 }
+
+variable "ssh_allowed_ips" {
+  description = "CIDR blocks allowed to SSH to the jump server"
+  type        = list(string)
+}

@@ -30,3 +30,12 @@ Run from the `ansible/` directory:
 ```bash
 ansible-playbook playbooks/....
 ```
+
+## Ansible Vault
+
+Secrets are stored in:
+
+- group_vars/\*/vault.yml
+
+Run playbooks with:
+ansible-playbook playbooks/<playbook>.yml --vault-password-file vault_pass.txt

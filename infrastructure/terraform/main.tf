@@ -36,7 +36,7 @@ resource "linode_firewall" "jump_fw" {
     action   = "ACCEPT"
     protocol = "TCP"
     ports    = "22"
-    ipv4     = ["0.0.0.0/0"]
+    ipv4     = var.ssh_allowed_ips
   }
 
   inbound_policy  = "DROP"   # Drops evertying else 

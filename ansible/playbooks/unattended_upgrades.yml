@@ -1,0 +1,8 @@
+---
+- name: Enable automatic security updates
+  hosts: all
+  remote_user: devops
+  become: true
+  roles:
+    - unattended_upgrades
+...

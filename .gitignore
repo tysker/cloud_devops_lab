@@ -1,6 +1,11 @@
 ### Ansible ###
 *.retry
 
+# ansible vault pass
+.vault_pass.*
+.vault_pass
+*.vault_pass
+
 ### Terraform ###
 **/.terraform/*
 **/terraform.tfstate

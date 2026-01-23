@@ -1,0 +1,8 @@
+---
+- name: Configure fail2ban on jump
+  hosts: bastion
+  remote_user: devops
+  become: true
+  roles:
+    - fail2ban
+...
